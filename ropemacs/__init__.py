@@ -439,14 +439,23 @@ def occurrences_goto():
 occurrences_goto.interaction = ''
 
 def occurrences_next(arg, reset):
-    lisp.switch_to_buffer_other_window('*rope-occurrences*', True)
-    if reset:
-        lisp.goto_char(lisp.point_min())
-    lisp.forward_line(arg)
-    if lisp.eobp():
-        lisp.message("Cycling rope occurrences")
-        lisp.goto_char(lisp.point_min())
-    occurrences_goto()
+    buffername = "*rope-occurrences*"
+    linenum = lisp.with_current_buffer(buffername,
+                                       lisp.count_lines(lisp.point_min(), lisp.point_max()))
+    if linenum > 1:
+        lisp.switch_to_buffer_other_window(buffername, True)
+        if reset:
+            lisp.goto_char(lisp.point_min())
+        lisp.forward_line(arg)
+        if lisp.eobp():
+            lisp.message("Cycling rope occurrences")
+            lisp.goto_char(lisp.point_min())
+            lisp.forward_line(1)
+        if lisp.bobp():
+            lisp.message("Cycling rope occurrences")
+            lisp.goto_char(lisp.point_max())
+            lisp.forward_line(-1)
+        occurrences_goto()
 occurrences_next.interaction = ''
 
 
