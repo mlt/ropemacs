@@ -172,14 +172,14 @@ class LispUtils(ropemode.environment.Environment):
         """
         new_buffer = lisp.get_buffer_create(name)
         lisp.set_buffer(new_buffer)
-        lisp.toggle_read_only(-1)
+        lisp.set(lisp['buffer-read-only'], None)
         lisp.erase_buffer()
         if contents or empty_goto:
             lisp.insert(contents)
             for mode in modes:
                 lisp[mode + '-mode']()
             lisp.buffer_disable_undo(new_buffer)
-            lisp.toggle_read_only(1)
+            lisp.set(lisp['buffer-read-only'], True)
             if switch:
                 if window == 'current':
                     lisp.switch_to_buffer(new_buffer)
@@ -263,7 +263,7 @@ the rope-marker-ring")
     def show_occurrences(self, locations):
         buffer = self._make_buffer('*rope-occurrences*', "", switch=False)
         lisp.set_buffer(buffer)
-        lisp.toggle_read_only(0)
+        lisp.set(lisp['buffer-read-only'], None)
 
         trunc_length = len(lisp.rope_get_project_root())
 
@@ -285,7 +285,7 @@ the rope-marker-ring")
 
             lisp.insert("\n")
 
-        lisp.toggle_read_only(1)
+        lisp.set(lisp['buffer-read-only'], True)
 
         lisp.set(lisp["next-error-function"], lisp.rope_occurrences_next)
         lisp.local_set_key('\r', lisp.rope_occurrences_goto)
