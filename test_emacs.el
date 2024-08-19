@@ -1,3 +1,5 @@
+(add-hook 'kill-emacs-hook (lambda () (pymacs-exec "cov.save()")))
+
 (require 'ert-x)
 ;; (add-to-list 'load-path "/path/to/Pymacs")
 (require 'pymacs)

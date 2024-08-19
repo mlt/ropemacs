@@ -4,6 +4,7 @@ on: [push, pull_request]
 env:
   EMACS: /home/runner/.nix-profile/bin/emacs
   PIP_DISABLE_PIP_VERSION_CHECK: 1
+  COVERAGE: 1
 
 jobs:
   test:
@@ -24,11 +25,29 @@ jobs:
         cd /home/runner/work
         git clone https://github.com/mlt/Pymacs
         cd Pymacs
-        make check EMACS=$EMACS
-        sudo make install EMACS=$EMACS
+        python -m pip install coverage
+        make check EMACS=$EMACS COVERAGE=$COVERAGE
+        sudo make install EMACS=$EMACS COVERAGE=$COVERAGE
         sudo cp pymacs.el /home/runner/.nix-profile/share/emacs/site-lisp/
     - name: Install ropemacs
       run: |
         python -m pip install --user --editable .
     - name: Test ropemacs
       run: emacs -batch -l ert -l test_emacs.el -f ert-run-tests-batch-and-exit
+    - name: Upload results to Codecov
+      if: matrix.emacs-version == 'snapshot'
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Process coverage
+      if: matrix.emacs-version == 'snapshot'
+      run: |
+        coverage html
+        coverage report
+    - name: Archive coverage
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-${{ matrix.emacs-version }}
+        path: |
+          .coverage
+          htmlcov

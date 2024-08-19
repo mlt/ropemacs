@@ -1,3 +1,10 @@
+.. image:: https://github.com/mlt/ropemacs/actions/workflows/test.yml/badge.svg
+   :alt: CI
+   :target: https://github.com/mlt/ropemacs/actions/workflows/test.yml
+.. image:: https://codecov.io/github/mlt/ropemacs/graph/badge.svg?token=V0MNLT8YPS
+   :alt: codecov
+   :target: https://codecov.io/github/mlt/ropemacs
+
 .. csv-table::
 
    "❗If you are using ropemacs, consider using `pylsp-rope`_ in Emacs."
