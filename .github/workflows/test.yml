@@ -29,9 +29,12 @@ jobs:
         make check EMACS=$EMACS COVERAGE=$COVERAGE
         sudo make install EMACS=$EMACS COVERAGE=$COVERAGE
         sudo cp pymacs.el /home/runner/.nix-profile/share/emacs/site-lisp/
-    - name: Install ropemacs
+    - name: Install ropemode from git
       run: |
-        python -m pip install --user --editable .
+        python -m pip install --upgrade pip
+        python -m pip install git+https://github.com/mlt/ropemode.git@completions
+    - name: Install ropemacs
+      run: python -m pip install --user --editable .
     - name: Test ropemacs
       run: emacs -batch -l ert -l test_emacs.el -f ert-run-tests-batch-and-exit
     - name: Upload results to Codecov
