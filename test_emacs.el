@@ -51,3 +51,17 @@
       (rope-find-occurrences))
     (dotimes (i 5)               ; only 4 occurences, should wrap around
       (should (next-error)))))
+
+(ert-deftest show-completion ()
+  "Test whether completion is proposed"
+  (with-current-buffer b
+    (goto-char (point-min))
+    (search-forward "self.ask_")
+    (cl-letf (((symbol-function ropemacs-completing-read-function)
+               (lambda (prompt collection &rest _)
+                 (should (string= "Completion for self.ask_: " prompt))
+                 (should (equal collection '("ask_completion" "ask_directory" "ask_values")))
+                 "ask_values")))
+      (rope-code-assist nil))
+    (should (buffer-modified-p))
+    (should (revert-buffer nil t))))
